@@ -23,6 +23,8 @@ export default tseslint.config(
          '**/*.d.ts',
          'node_modules',
          'components.json',
+         '.prettierrc',
+         '.prettierrc.*',
       ],
    },
    js.configs.recommended,
