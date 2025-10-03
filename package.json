@@ -2,7 +2,7 @@
   "author": "Philian73",
   "description": "ESLint configuration by philian73",
   "name": "@philian73/eslint-config",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "type": "module",
   "main": "index.js",
   "repository": {
@@ -11,6 +11,13 @@
   },
   "homepage": "https://github.com/philian73/eslint-config-philian73#readme",
   "license": "MIT",
+  "exports": {
+    ".": "./index.js",
+    "./recommended": "./recommended.js",
+    "./vite": "./vite.js",
+    "./next": "./next.js",
+    "./tailwind": "./tailwind.js"
+  },
   "peerDependencies": {
     "@eslint/js": "^9.36.0",
     "@next/eslint-plugin-next": "^15.5.4",
