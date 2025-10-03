@@ -1,57 +1,56 @@
 import js from '@eslint/js'
 import tseslint from 'typescript-eslint'
 import globals from 'globals'
-import react from 'eslint-plugin-react'
-import reactRefresh from 'eslint-plugin-react-refresh'
+import reactPlugin from 'eslint-plugin-react'
 import reactHooks from 'eslint-plugin-react-hooks'
 import prettierPlugin from 'eslint-plugin-prettier'
 import prettierConfig from 'eslint-config-prettier'
 import importPlugin from 'eslint-plugin-import'
 import perfectionist from 'eslint-plugin-perfectionist'
 
-export default tseslint.config(
-   {
-      ignores: [
-         '.next',
-         '.idea',
-         '.vscode',
-         'tests/*',
-         'scripts/*',
-         'public/*',
-         'dist',
-         'index.js',
-         '**/*.d.ts',
-         'node_modules',
-         'components.json',
-         '.prettierrc',
-         '.prettierrc.*',
-      ],
-   },
-   js.configs.recommended,
-   ...tseslint.configs.recommended,
-   importPlugin.flatConfigs.recommended,
-   importPlugin.flatConfigs.typescript,
+import { defineConfig, globalIgnores } from 'eslint/config'
+
+export default defineConfig([
+   globalIgnores([
+      '**/.idea/**',
+      '**/.vscode/**',
+      '**/.next/**',
+      '**/dist/**',
+      '**/build/**',
+      '**/node_modules/**',
+      '**/coverage/**',
+      '**/out/**',
+      '**/.turbo/**',
+      '**/.yarn/**',
+      '**/cypress/videos/**',
+      '**/cypress/screenshots/**',
+      '**/.DS_Store',
+      '**/scripts/**',
+      '**/public/**',
+      'components.json',
+      '.prettierrc',
+      '.prettierrc.*',
+      'eslint.*',
+   ]),
    {
       files: ['**/*.{js,ts,jsx,tsx,cjs,cts,mjs,mts}'],
-      languageOptions: {
-         ecmaVersion: 2021,
-         globals: { ...globals.browser, ...globals.node },
-      },
+      extends: [
+         js.configs.recommended,
+         tseslint.configs.recommended,
+         importPlugin.flatConfigs.recommended,
+         importPlugin.flatConfigs.typescript,
+         reactHooks.configs['recommended-latest'],
+         reactPlugin.configs.flat.recommended,
+         reactPlugin.configs.flat['jsx-runtime'],
+         prettierConfig,
+      ],
       plugins: {
-         react,
+         react: reactPlugin,
          prettier: prettierPlugin,
-         'react-hooks': reactHooks,
-         'react-refresh': reactRefresh,
          perfectionist,
       },
       rules: {
-         ...react.configs.flat.recommended.rules,
-         ...react.configs.flat['jsx-runtime'].rules,
          ...prettierConfig.rules,
-         ...reactHooks.configs.recommended.rules,
-         ...reactRefresh.configs.recommended.rules,
-         'prettier/prettier': ['warn', { usePrettierrc: true }],
-         'react-refresh/only-export-components': 0,
          'arrow-parens': 'off',
          'consistent-return': 'off',
          curly: ['error', 'all'],
@@ -62,20 +61,13 @@ export default tseslint.config(
          'import/no-duplicates': 'error',
          'import/order': 'off',
          'import/prefer-default-export': 'off',
+         'import/no-unresolved': ['error', { ignore: ['^/'] }],
          'max-lines': ['error', 300],
          'no-console': ['warn', { allow: ['warn', 'error'] }],
          'no-debugger': 'warn',
          'no-empty-pattern': 'off',
          'no-nested-ternary': 'error',
          'no-undef': 'warn',
-         '@typescript-eslint/no-unused-vars': [
-            'error',
-            {
-               args: 'after-used',
-               ignoreRestSiblings: true,
-               argsIgnorePattern: '^_.*?$',
-            },
-         ],
          'no-var': 'error',
          'padding-line-between-statements': [
             'error',
@@ -131,18 +123,47 @@ export default tseslint.config(
                fixStyle: 'separate-type-imports',
             },
          ],
+         '@typescript-eslint/no-unused-vars': [
+            'error',
+            {
+               args: 'after-used',
+               ignoreRestSiblings: true,
+               argsIgnorePattern: '^_.*?$',
+            },
+         ],
       },
       settings: {
+         react: {
+            version: 'detect',
+         },
          'import/parsers': {
-            '@typescript-eslint/parser': ['.ts', '.tsx'],
+            [tseslint.parser]: ['.ts', '.tsx'],
          },
          'import/resolver': {
             node: { extensions: ['.js', '.jsx', '.ts', '.tsx'], paths: ['src'] },
             typescript: { alwaysTryTypes: true },
          },
-         react: {
-            version: 'detect',
+      },
+      languageOptions: {
+         parser: tseslint.parser,
+         parserOptions: {
+            ecmaFeatures: {
+               jsx: true,
+            },
+         },
+         ecmaVersion: 2021,
+         sourceType: 'module',
+         globals: {
+            ...globals.browser,
+            ...globals.node,
          },
       },
-   }
-)
+   },
+   {
+      files: ['**/*.stories.{ts,tsx}'],
+      rules: {
+         'no-console': 'off',
+         'react-hooks/rules-of-hooks': 'off',
+      },
+   },
+])
