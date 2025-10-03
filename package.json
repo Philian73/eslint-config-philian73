@@ -11,6 +11,7 @@
   },
   "homepage": "https://github.com/philian73/eslint-config-philian73#readme",
   "license": "MIT",
+  "types": "index.d.ts",
   "exports": {
     ".": "./index.js",
     "./recommended": "./recommended.js",
