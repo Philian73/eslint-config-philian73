@@ -84,7 +84,7 @@ export default defineConfig([
             {
                customGroups: {
                   type: { reactType: 'react' },
-                  value: { react: ['react', 'react-*'], alias: ['@/-*'] },
+                  value: { react: ['react', 'react-*'], alias: ['^@/(?!.*\\.(css|scss|sass|less)$)'] },
                },
                groups: [
                   'reactType',
